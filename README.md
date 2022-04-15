@@ -4,4 +4,6 @@ Computational pipelines for the study of gut microbiome in MS via the internatio
 
 Citation:  "Exploring the gut microbiome in 576 pairs of multiple sclerosis patients and household healthy controls" 
 
-
+# Usage
+In order to read HTML, just prepend this fragment to the URL of any HTML file: https://htmlpreview.github.io/? e.g.:
+https://htmlpreview.github.io/?https://github.com/Sharonxiaoyuan/iMSMS_study/blob/main/iMSMS_16SrRNA_study.html
