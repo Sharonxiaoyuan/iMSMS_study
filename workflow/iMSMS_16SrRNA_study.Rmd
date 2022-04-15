@@ -1,7 +1,9 @@
 ---
 title: "iMSMS 16S rRNA study"
 author: "Xiaoyuan Zhou, PhD"
-output: html_document
+output:
+  pdf_document: default
+  html_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -84,7 +86,7 @@ qsub scripts/qiime2_diversity.sh
 ## 2.1 Plot of alpha-diversity
 ```{r}
 source("scripts/diversity_plot.R")
-#plot diversity by disease status (MS and HHC)
+# plot diversity by disease status (MS and HHC)
 diversity.res = diversity_plot(diversity =diversity, meta=seqmeta, group = "disease",levels = group.levels, color = color.list,plot.type ="boxplot", angle = 0, width =7, height =6,out.dir ="results/")
 
 #plot diversity by disease subtype (RRMS, PMS and corresponding HHC)
