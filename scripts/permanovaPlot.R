@@ -1,12 +1,12 @@
 permanovaPlot =function(data, confounder.anova, distance =TRUE, termgroup, category = "kegg"){
   names = colnames(confounder.anova)
   names = names[!names %in% c("iMSMS_ID", "household")]
-  
+
   adonis.res = list()
   for(i in 1:length(names)){
     confounder2 = confounder.anova[confounder.anova$iMSMS_ID %in% rownames(data),]
     confounder2 = confounder2[!is.na(confounder2[,i+1]) & confounder2[,i+1] != "", ]
-    
+
     if(! distance){
       abun = data[rownames(data) %in% confounder2$iMSMS_ID, ]
       dis = vegdist(abun, method = "bray",diag =T, upper = T)
@@ -18,23 +18,23 @@ permanovaPlot =function(data, confounder.anova, distance =TRUE, termgroup, categ
   names(adonis.res) = names
   # extract the R2 and Pvalue
   extra.num = 0 # number of above house site covariate
-  
+
   result = matrix(NA, nrow = length(names)+extra.num, ncol =2)
   for(i in 1:(length(names)+extra.num)){
     result[i,1] = adonis.res[[i]]$aov.tab$R2[1]
     result[i,2] = adonis.res[[i]]$aov.tab$`Pr(>F)`[1]
   }
-  
+
   rownames(result) = c(names)
   colnames(result) = c("R2", "Pvalue")
   result = data.frame(result, stringsAsFactors = F)
   result$Padjust = p.adjust(result$Pvalue, method = "fdr")
-  
-  # write.csv(result, "Adonis_R2.csv", )
-  # result=read.csv("Adonis_R2.csv",head=T,as.is=T,row.names = 1)
+
+  write.csv(result, "Adonis_R2.csv", )
+  result=read.csv("Adonis_R2.csv",head=T,as.is=T,row.names = 1)
   result$ID = rownames(result)
   for(i in 1:nrow(result)){
-    result$Group[i] = termgroup[termgroup$Term == result$ID[i], "Group"]
+    result$Group[i] = as.character(termgroup[termgroup$Term == result$ID[i], "Group"])
   }
   presult = result[result$Pvalue < 0.05,]
   padj.result = result[result$Padjust < 0.05,]

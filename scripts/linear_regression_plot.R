@@ -9,6 +9,11 @@ require(reshape2)
 require(reshape)
 linear_regression_plot =function(linear.res,disease.only =TRUE,group = "disease",taxaname=T, order.group = "MS",disease.each =FALSE, fdr = 0.05, taxa = "ASV",col.disease = "red", 
                                  out.file, padjust =TRUE, width =10,height =12, title= ""){
+  print("Linear Regression Plot Arguments")
+  print(out.file)
+  out_directory = dirname(out.file)
+  dir.create(out_directory, recursive=TRUE)
+  
   if(taxaname){
     taxaname = sapply(linear.res$taxonomy,function(x){
       y = gsub("; [a-z]__;.*", "", x)

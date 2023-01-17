@@ -4,7 +4,7 @@ lapply(list("ape", "ggplot2","phyloseq", "car", "rgl"), require, character.only 
 unifracPCA  = function(file="results/3.diversity/Filtered_otu_averaged/diversity10k/bdiv_even10000/weighted_unifrac_dm.txt",  
                       condition = meta, group = "wet_dry",  color.list=color.list, adonis =TRUE,strataID = "pair",
                       levels = c("Control","RRMS","PMS"), method =c("PCoA", "3DPCoA"),shapes =c(16,16,16),
-                      width =6, height=5, line =FALSE,label=FALSE, firmicutes=FALSE, color.max = 1, low = "blue", high = "red"){
+                      width =6, height=5, line =FALSE,label=FALSE, firmicutes=FALSE, color.max = 1, low = "blue", high = "red", suffix=""){
   if(is.character(file)){
     weight = read.table(file, head=T,as.is=T)
   }else{
@@ -16,7 +16,9 @@ unifracPCA  = function(file="results/3.diversity/Filtered_otu_averaged/diversity
   pcs$eig[pcs$eig < 0 ] = 0
   # calculate the % of variance explained
   percent = as.numeric(pcs$eig/sum(pcs$eig))[1:3]
-  condition = condition[match(rownames(weight), condition[,1]),]
+  matched = match(rownames(weight), condition[,1])
+  matched = matched[!is.na(matched)]
+  condition = condition[matched,]
   
   if(adonis){
     #condition2 = condition[!condition$pair %in% as.numeric(names(which(table(condition$pair)==1))), ]
@@ -84,7 +86,8 @@ unifracPCA  = function(file="results/3.diversity/Filtered_otu_averaged/diversity
     if(label){
       p = p + geom_text(aes_string(label= "map$SampleID", colour = legend),size =1.5, hjust = 0, check_overlap = T, nudge_x = 0)
     }
-    ggsave(p, file= paste("UniFrac_", group, "_PCoA.pdf",sep=""), 
+    
+    ggsave(p, file= paste("UniFrac_", group, suffix, "_PCoA.pdf",sep=""), 
            width =width, height =height, useDingbats=F)
   }
   if(adonis){

@@ -16,57 +16,56 @@ require(pheatmap)
 require(RColorBrewer)
 
 CoefHeatmap = function(diff.species, selected =NULL, name  =NULL,p.value=0.05, fdr = 0.05,coef =FALSE,
-                       colnames = c("MS", "RRMS","PMS"),angle_col= 0,cluster_rows =T,cluster_cols=F, breaks =FALSE, width = 8, height =10,border.col="grey",
+                       colnames = c("MS","RRMS","PMS"),angle_col= 0,cluster_rows =T,cluster_cols=F, breaks =FALSE, width = 8, height =10,border.col="grey",
                        out.file = "results/WOL_shogun/Linear_regression/New202104/TreatedMS_RRMS_PMS_HHC_heatmap_fdr0.05.pdf"){
   
-# get the p or fdr column index 
-    if(!is.null(fdr)){
-      if(!is.null(name)){
-        index = paste("fdr",name,sep="_")
-      }else{
-        index = 17
-      }
-      if(is.null(selected )){
-      sps = lapply(diff.species, function(x){
-        y  = x[x[,index] <= fdr, ]
-        y$taxonomy
-      })
-      }
+  # get the p or fdr column index 
+  if(!is.null(fdr)){
+    if(!is.null(name)){
+      index = paste("fdr",name,sep="_")
     }else{
-      if(!is.null(name)){
-        index = paste("Pr",name,sep="_")
-      }else{
-        index = 5
-      }
-      if(is.null(selected )){
-      sps = lapply(diff.species , function(x){
-        y  = x[x[,index] <= p.value, ]
-        if(coef){
-          quantiles = quantile(x[,1], seq(0,1,0.05))
-          min = quantiles["5%"]
-          max = quantiles["95%"]
-          y= y[y[,1] <= min | y[,1] >= max, ]
-        }
-        y$taxonomy
-      })
-      }
+      index = 17
     }
+    if(is.null(selected )){
+    sps = lapply(diff.species, function(x){
+      y  = x[x[,index] <= fdr, ]
+      y$taxonomy
+    })
+    }
+  }else{
+    if(!is.null(name)){
+      index = paste("Pr",name,sep="_")
+    }else{
+      index = 5
+    }
+    if(is.null(selected )){
+    sps = lapply(diff.species , function(x){
+      y  = x[x[,index] <= p.value, ]
+      if(coef){
+        quantiles = quantile(x[,1], seq(0,1,0.05))
+        min = quantiles["5%"]
+        max = quantiles["95%"]
+        y= y[y[,1] <= min | y[,1] >= max, ]
+      }
+      y$taxonomy
+    })
+    }
+  }
     
   if(is.null(selected )){
-  sps =unique(unlist(sps))
+    sps =unique(unlist(sps))
   }else{
     sps = selected
   }
   
-    data = lapply(diff.species ,function(x){
-      if(!is.null(name)){
-        y = x[x$taxonomy %in% sps, c("taxonomy", paste("Coef", name, sep="_"),index)]
-      }else{
-        
-        y = x[x$taxonomy %in% sps, c(which(colnames(x) == "taxonomy"),1,index)]
-      }
-      y
-    })
+  data = lapply(diff.species ,function(x){
+    if(!is.null(name)){
+      y = x[x$taxonomy %in% sps, c("taxonomy", paste("Coef", name, sep="_"),index)]
+    }else{
+      y = x[x$taxonomy %in% sps, c(which(colnames(x) == "taxonomy"),1,index)]
+    }
+    y
+  })
   
   dataall = Reduce(function(x,y) merge(x,y, by = "taxonomy",all =T),data )
   dataall= dataall[match(sps, dataall$taxonomy),]
