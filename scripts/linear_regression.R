@@ -27,7 +27,15 @@ linear_regression = function(rel.data, condition = seqmeta, filter =FALSE, fixed
     install.packages("car")
   }
   # filter the microbes with less present in 5% samples
-   data = rel.data[,colnames(rel.data) %in% condition$iMSMS_ID]
+  # TODO FIXME HACK: WHY IS ONE USING - AND ONE USING . !?!
+  for (x in 1:length(colnames(rel.data)))
+  {
+    s = colnames(rel.data)[x] 
+    colnames(rel.data)[x] = paste(substring(s, 1, 5), substring(s, 7, 10), sep="-")
+  }
+
+  data = rel.data[,colnames(rel.data) %in% condition$iMSMS_ID]
+
   if(filter){
     #
     # filter the microbes with small variance (citation : http://joey711.github.io/phyloseq-demo/phyloseq-demo.html)
@@ -37,7 +45,6 @@ linear_regression = function(rel.data, condition = seqmeta, filter =FALSE, fixed
     }else{
       data = data[apply(data,1, function(x) var(x)) >= 1e-5,]
     }
-
   }else{
     data = data[apply(data,1, function(x) var(x)) > 0,]
   }
