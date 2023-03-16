@@ -6,7 +6,7 @@ output: html_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
-knitr::opts_knit$set(root.dir = "~/xiaoyuan_imsms/iMSMS_study") # Argh, Rmd files reference from current file but we want from one directory up.
+knitr::opts_knit$set(root.dir = "~/dan_imsms") # Argh, Rmd files reference from current file but we want from one directory up.
 
 # Flags defining whether to rebuild certain plots that take a long time
 DO_UNIFRAC = FALSE
@@ -118,9 +118,9 @@ sizes <- sapply(ls(), function(n) object.size(get(n)), simplify = FALSE); print(
 ```{r}
 # load data for shotgun metagenomics analysis
 load("rdata/seqmeta.rda") #meta data for 1152 samples
-#load("rdata/seqmeta_all.rda") #Qiita metadata including new round of samples
+load("rdata/seqmeta_all.rda") #Qiita metadata including new round of samples
 load("rdata/taxa.list.rda") # Raw abundance of metagenomics taxa, e.g. phylum, order, species
-#load("rdata/taxa_new.list.rda") # Raw abundance of new metagenomics taxa, "none" level
+load("rdata/taxa_new.list.rda") # Raw abundance of new metagenomics taxa, "none" level
 load("rdata/high.path.rda") # Relative abundance of metagenomics pathways in different hierarchy (MetaCyc)
 ```
 
@@ -198,10 +198,10 @@ taxa.list.filter = proc$filter
 taxa.list.rel = proc$rel
 taxa.list.ast = proc$ast
 
-#proc2 = preprocess(taxa_new.list)
-#taxa_new.list.filter = proc2$filter
-#taxa_new.list.rel = proc2$rel
-#taxa_new.list.ast = proc2$ast
+proc2 = preprocess(taxa_new.list)
+taxa_new.list.filter = proc2$filter
+taxa_new.list.rel = proc2$rel
+taxa_new.list.ast = proc2$ast
 ```
 
 #2. Microbial beta-diversity
